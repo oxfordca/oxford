@@ -11,10 +11,10 @@ from itertools import chain
 class ReportAccountAgedPartner(models.AbstractModel):
     _inherit = 'account.aged.partner'
 
-    period1 = fields.Monetary(string='1 - 15')
-    period2 = fields.Monetary(string='16 - 30')
-    period3 = fields.Monetary(string='31 - 60')
-    period4 = fields.Monetary(string='61 - 90')
+    period1 = fields.Monetary(string=_('1 - 15'))
+    period2 = fields.Monetary(string=_('16 - 30'))
+    period3 = fields.Monetary(string=_('31 - 60'))
+    period4 = fields.Monetary(string=_('61 - 90'))
     period5 = fields.Monetary(string=_('Older'))
 
     ####################################################
@@ -106,10 +106,10 @@ class ReportAccountAgedPartner(models.AbstractModel):
             self._field_column('expected_pay_date', name=_("Expiration Date")),
             self._field_column(
                 'period0',
-                name=_("As of: %s") % format_date(
+                name=_("As of: %s", format_date(
                     self.env,
                     options['date']['date_to']
-                )
+                ))
             ),
             self._field_column('period1', sortable=True),
             self._field_column('period2', sortable=True),
