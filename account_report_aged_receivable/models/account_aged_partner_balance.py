@@ -111,11 +111,11 @@ class ReportAccountAgedPartner(models.AbstractModel):
                     options['date']['date_to']
                 ))
             ),
-            self._field_column('period1', sortable=True),
-            self._field_column('period2', sortable=True),
-            self._field_column('period3', sortable=True),
-            self._field_column('period4', sortable=True),
-            self._field_column('period5', sortable=True),
+            self._field_column('period1', name=_("1 - 15"), sortable=True),
+            self._field_column('period2', name=_("16 - 30"), sortable=True),
+            self._field_column('period3', name=_("31 - 60"), sortable=True),
+            self._field_column('period4', name=_("61 - 90"), sortable=True),
+            self._field_column('period5', name=_("Older"), sortable=True),
             self._custom_column(  # Avoid doing twice the sub-select in the view
                 name=_('Total'),
                 classes=['number'],
