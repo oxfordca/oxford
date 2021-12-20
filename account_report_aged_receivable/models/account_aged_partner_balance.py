@@ -1,4 +1,4 @@
-# -*3- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from datetime import datetime
 from odoo import models, api, fields, _
