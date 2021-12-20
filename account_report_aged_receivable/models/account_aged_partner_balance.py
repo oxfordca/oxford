@@ -1,6 +1,5 @@
-# -*3- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from datetime import datetime
 from odoo import models, api, fields, _
 from odoo.tools.misc import format_date
 from odoo.exceptions import ValidationError
@@ -16,9 +15,9 @@ class ReportAccountAgedPartner(models.AbstractModel):
     period2 = fields.Monetary(string='16 - 30')
     period3 = fields.Monetary(string='31 - 60')
     period4 = fields.Monetary(string='61 - 90')
-    period5 = fields.Monetary(string='Más Antiguos')
+    period5 = fields.Monetary(string=_('Older'))
 
-####################################################
+    ####################################################
     # QUERIES
     ####################################################
 
@@ -41,7 +40,6 @@ class ReportAccountAgedPartner(models.AbstractModel):
 
         :return: A floating sql query representing the report's periods.
         '''
-        
         def minus_days(date_obj, days):
             return fields.Date.to_string(date_obj - relativedelta(days=days))
 
@@ -63,37 +61,56 @@ class ReportAccountAgedPartner(models.AbstractModel):
             chain.from_iterable(
                 (period[0] or None, period[1] or None, i)
                 for i, period in enumerate(period_values)
-        ))
+            )
+        )
         return self.env.cr.mogrify(period_table, params).decode(self.env.cr.connection.encoding)
-   
 
     ####################################################
     # COLUMNS/LINES
     ####################################################
+
     @api.model
     def _get_column_details(self, options):
         def cal_days_diff(a, ba, bm, bd):
-            Anos= a.year - ba
-            if Anos > 0: Meses= (a.month * Anos) - bm
-            else: Meses= a.month - bm
-            if Meses > 0: Dias= a.day*Meses - bd
-            else: Dias= a.day - bd
-            issuesdays = Dias+(Meses*30)+(Anos*365)
+            Anos = a.year - ba
+            if Anos > 0:
+                Meses = (a.month * Anos) - bm
+            else:
+                Meses = a.month - bm
+            if Meses > 0:
+                Dias = a.day*Meses - bd
+            else:
+                Dias = a.day - bd
+            issuesdays = Dias + (Meses*30) + (Anos*365)
             if issuesdays < 0:
-                issuesdays=0
+                issuesdays = 0
             return issuesdays
+
         return [
             self._header_column(),
-            self._field_column('report_date' ,name='Date of Report'),
-            self._field_column('account_name', name='Account'),
+            self._field_column('report_date', name=_('Date of Report')),
+            self._field_column('account_name', name=_('Account')),
             self._custom_column(
                 name=_('Issue Days'),
                 classes=['char'],
-                getter=(lambda v: cal_days_diff( fields.Date.today() , v['report_date'].year, v['report_date'].month, v['report_date'].day)),
-                sortable=True,
+                getter=(
+                    lambda v: cal_days_diff(
+                        fields.Date.today(),
+                        v['report_date'].year,
+                        v['report_date'].month,
+                        v['report_date'].day
+                    )
                 ),
-            self._field_column('expected_pay_date', name="Expiration Date"),
-            self._field_column('period0', name=_("As of: %s") % format_date(self.env, options['date']['date_to'])),
+                sortable=True,
+            ),
+            self._field_column('expected_pay_date', name=_("Expiration Date")),
+            self._field_column(
+                'period0',
+                name=_("As of: %s") % format_date(
+                    self.env,
+                    options['date']['date_to']
+                )
+            ),
             self._field_column('period1', sortable=True),
             self._field_column('period2', sortable=True),
             self._field_column('period3', sortable=True),
@@ -103,7 +120,9 @@ class ReportAccountAgedPartner(models.AbstractModel):
                 name=_('Total'),
                 classes=['number'],
                 formatter=self.format_value,
-                getter=(lambda v: v['period0'] + v['period1']+ v['period2'] + v['period3'] + v['period4'] + v['period5']),
+                getter=(
+                    lambda v: v['period0'] + v['period1'] + v['period2'] + v['period3'] + v['period4'] + v['period5']
+                ),
                 sortable=True,
             ),
         ]
@@ -115,4 +134,3 @@ class ReportAccountAgedPartner(models.AbstractModel):
             for f in ['period0', 'period1', 'period2', 'period3', 'period4', 'period5']
         )
         return super()._show_line(report_dict, value_dict, current, options) and not all_zero
-
