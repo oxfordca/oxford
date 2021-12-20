@@ -3,8 +3,8 @@
     'name': "Personalización al Reporte Vencidas por Cobrar",
 
     'summary': """
-        Nueva Columna (DÍAS DE
-       EMISIÓN) y se modificó el Rango """,
+        Nueva Columna (DÍAS DE EMISIÓN) y se modificó el Rango 
+    """,
 
     'description': """
        Al lado derecho de la columna CUENTA, debe aparecer una columna (DÍAS DE
@@ -22,13 +22,13 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly ..
-    'depends': ['base','account_reports'],
+    'depends': ['base', 'account_reports'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        
     ],
+
     # only loaded in demonstration mode
     'demo': [
 
