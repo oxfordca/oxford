@@ -1,0 +1,116 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* account_report_aged_receivable
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-12-20 20:43+0000\n"
+"PO-Revision-Date: 2021-12-20 20:43+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_report_aged_receivable
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_partner__period1
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_payable__period1
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_receivable__period1
+msgid "1 - 15"
+msgstr "1 - 15"
+
+#. module: account_report_aged_receivable
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_partner__period2
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_payable__period2
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_receivable__period2
+msgid "16 - 30"
+msgstr "16 - 30"
+
+#. module: account_report_aged_receivable
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_partner__period3
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_payable__period3
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_receivable__period3
+msgid "31 - 60"
+msgstr "31 - 60"
+
+#. module: account_report_aged_receivable
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_partner__period4
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_payable__period4
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_receivable__period4
+msgid "61 - 90"
+msgstr "61 - 90"
+
+#. module: account_report_aged_receivable
+#: code:addons/account_report_aged_receivable/models/.ipynb_checkpoints/account_aged_partner_balance-checkpoint.py:0
+#: code:addons/account_report_aged_receivable/models/account_aged_partner_balance.py:0
+#, python-format
+msgid "Account"
+msgstr "Cuenta"
+
+#. module: account_report_aged_receivable
+#: model:ir.model,name:account_report_aged_receivable.model_account_aged_partner
+msgid "Aged Partner Balances"
+msgstr "Saldos vencidos de empresa"
+
+#. module: account_report_aged_receivable
+#: code:addons/account_report_aged_receivable/models/.ipynb_checkpoints/account_aged_partner_balance-checkpoint.py:0
+#: code:addons/account_report_aged_receivable/models/account_aged_partner_balance.py:0
+#, python-format
+msgid "As of: %s"
+msgstr "A partir del: %s"
+
+#. module: account_report_aged_receivable
+#: code:addons/account_report_aged_receivable/models/.ipynb_checkpoints/account_aged_partner_balance-checkpoint.py:0
+#: code:addons/account_report_aged_receivable/models/account_aged_partner_balance.py:0
+#, python-format
+msgid "Date of Report"
+msgstr "Fecha de reporte"
+
+#. module: account_report_aged_receivable
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_partner__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: account_report_aged_receivable
+#: code:addons/account_report_aged_receivable/models/.ipynb_checkpoints/account_aged_partner_balance-checkpoint.py:0
+#: code:addons/account_report_aged_receivable/models/account_aged_partner_balance.py:0
+#, python-format
+msgid "Expiration Date"
+msgstr "Fecha de expiración"
+
+#. module: account_report_aged_receivable
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_partner__id
+msgid "ID"
+msgstr "ID"
+
+#. module: account_report_aged_receivable
+#: code:addons/account_report_aged_receivable/models/.ipynb_checkpoints/account_aged_partner_balance-checkpoint.py:0
+#: code:addons/account_report_aged_receivable/models/account_aged_partner_balance.py:0
+#, python-format
+msgid "Issue Days"
+msgstr "Días de emisión"
+
+#. module: account_report_aged_receivable
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_partner____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: account_report_aged_receivable
+#: code:addons/account_report_aged_receivable/models/.ipynb_checkpoints/account_aged_partner_balance-checkpoint.py:0
+#: code:addons/account_report_aged_receivable/models/account_aged_partner_balance.py:0
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_partner__period5
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_payable__period5
+#: model:ir.model.fields,field_description:account_report_aged_receivable.field_account_aged_receivable__period5
+#, python-format
+msgid "Older"
+msgstr "Más antiguo"
+
+#. module: account_report_aged_receivable
+#: code:addons/account_report_aged_receivable/models/.ipynb_checkpoints/account_aged_partner_balance-checkpoint.py:0
+#: code:addons/account_report_aged_receivable/models/account_aged_partner_balance.py:0
+#, python-format
+msgid "Total"
+msgstr "Total"
