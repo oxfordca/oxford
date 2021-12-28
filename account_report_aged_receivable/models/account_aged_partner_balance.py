@@ -71,21 +71,6 @@ class ReportAccountAgedPartner(models.AbstractModel):
 
     @api.model
     def _get_column_details(self, options):
-        def cal_days_diff(a, ba, bm, bd):
-            Anos = a.year - ba
-            if Anos > 0:
-                Meses = (a.month * Anos) - bm
-            else:
-                Meses = a.month - bm
-            if Meses > 0:
-                Dias = a.day*Meses - bd
-            else:
-                Dias = a.day - bd
-            issuesdays = Dias + (Meses*30) + (Anos*365)
-            if issuesdays < 0:
-                issuesdays = 0
-            return issuesdays
-
         return [
             self._header_column(),
             self._field_column('report_date', name=_('Date of Report')),
@@ -93,23 +78,18 @@ class ReportAccountAgedPartner(models.AbstractModel):
             self._custom_column(
                 name=_('Issue Days'),
                 classes=['char'],
-                getter=(
-                    lambda v: cal_days_diff(
-                        fields.Date.today(),
-                        v['report_date'].year,
-                        v['report_date'].month,
-                        v['report_date'].day
-                    )
-                ),
+                getter=lambda row: (
+                    fields.Date.today() - row['report_date']
+                ).days,
                 sortable=True,
             ),
             self._field_column('expected_pay_date', name=_("Expiration Date")),
             self._field_column(
                 'period0',
-                name=_("As of: %s", format_date(
-                    self.env,
-                    options['date']['date_to']
-                ))
+                name=_(
+                    "As of: %s",
+                    format_date(self.env, options['date']['date_to'])
+                )
             ),
             self._field_column('period1', name=_("1 - 15"), sortable=True),
             self._field_column('period2', name=_("16 - 30"), sortable=True),
@@ -120,8 +100,8 @@ class ReportAccountAgedPartner(models.AbstractModel):
                 name=_('Total'),
                 classes=['number'],
                 formatter=self.format_value,
-                getter=(
-                    lambda v: v['period0'] + v['period1'] + v['period2'] + v['period3'] + v['period4'] + v['period5']
+                getter=lambda row: sum(
+                    [row[f'period{i}'] for i in range(5+1)]
                 ),
                 sortable=True,
             ),
