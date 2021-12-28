@@ -15,8 +15,7 @@ class ReportAccountAgedPartner(models.AbstractModel):
     period2 = fields.Monetary(string=_('16 - 30'))
     period3 = fields.Monetary(string=_('31 - 60'))
     period4 = fields.Monetary(string=_('61 - 90'))
-    period5 = fields.Monetary(string=_('91 - 120'))
-    period6 = fields.Monetary(string=_('Older'))
+    period5 = fields.Monetary(string=_('Older'))
 
     ####################################################
     # QUERIES
@@ -52,8 +51,9 @@ class ReportAccountAgedPartner(models.AbstractModel):
             (minus_days(16),   minus_days(30)),
             (minus_days(31),   minus_days(60)),
             (minus_days(61),   minus_days(90)),
-            (minus_days(91),   minus_days(120)),
-            (minus_days(121),  None),
+            #(minus_days(91),   minus_days(120)),
+            #(minus_days(121),  None),
+            (minus_days(91),  None),
         ]
 
         period_table = '(VALUES %s) AS period_table(date_start, date_stop, period_index)' % (
@@ -95,14 +95,13 @@ class ReportAccountAgedPartner(models.AbstractModel):
             self._field_column('period2', name=_("16 - 30"), sortable=True),
             self._field_column('period3', name=_("31 - 60"), sortable=True),
             self._field_column('period4', name=_("61 - 90"), sortable=True),
-            self._field_column('period5', name=_("91 - 120"), sortable=True),
-            self._field_column('period6', name=_("Older"), sortable=True),
+            self._field_column('period5', name=_("Older"), sortable=True),
             self._custom_column(  # Avoid doing twice the sub-select in the view
                 name=_('Total'),
                 classes=['number'],
                 formatter=self.format_value,
                 getter=lambda row: sum(
-                    [row[f'period{i}'] for i in range(6+1)]
+                    [row[f'period{i}'] for i in range(5+1)]
                 ),
                 sortable=True,
             ),
@@ -111,6 +110,6 @@ class ReportAccountAgedPartner(models.AbstractModel):
     def _show_line(self, report_dict, value_dict, current, options):
         # Don't display an aml report line with all zero amounts.
         all_zero = all(
-            self.env.company.currency_id.is_zero(value_dict[f'period{i}']) for i in range(6+1)
+            self.env.company.currency_id.is_zero(value_dict[f'period{i}']) for i in range(5+1)
         )
         return super()._show_line(report_dict, value_dict, current, options) and not all_zero
