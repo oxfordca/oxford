@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
+# Part of Odoo. See LICENSE file for full copyright andt licensing details.
+from typing import List, Tuple, Union
+from datetime import timedelta
+from itertools import chain
+
 from odoo import models, api, fields, _
 from odoo.tools.misc import format_date
-from odoo.exceptions import ValidationError
-
-from dateutil.relativedelta import relativedelta
-from itertools import chain
 
 
 class ReportAccountAgedPartner(models.AbstractModel):
@@ -40,29 +40,29 @@ class ReportAccountAgedPartner(models.AbstractModel):
 
         :return: A floating sql query representing the report's periods.
         '''
-        def minus_days(date_obj, days):
-            return fields.Date.to_string(date_obj - relativedelta(days=days))
+        date = fields.Date.from_string(options['date']['date_to'])
 
-        date_str = options['date']['date_to']
-        date = fields.Date.from_string(date_str)
-        period_values = [
-            (False,                  date_str),
-            (minus_days(date, 1),    minus_days(date, 15)),
-            (minus_days(date, 16),   minus_days(date, 30)),
-            (minus_days(date, 31),   minus_days(date, 60)),
-            (minus_days(date, 61),   minus_days(date, 90)),
-            (minus_days(date, 91),   minus_days(date, 120)),
-            (minus_days(date, 121),  False),
+        def minus_days(days: Union[int, float] = 0) -> str:
+            return fields.Date.to_string(date - timedelta(days=days))
+
+        period_values: List[Tuple[Union[str, bool], Union[str, bool]]] = [
+            (None,             minus_days(0)),
+            (minus_days(1),    minus_days(15)),
+            (minus_days(16),   minus_days(30)),
+            (minus_days(31),   minus_days(60)),
+            (minus_days(61),   minus_days(90)),
+            #(minus_days(91),   minus_days(120)),
+            #(minus_days(121),  None),
+            (minus_days(91),  None),
         ]
 
-        period_table = ('(VALUES %s) AS period_table(date_start, date_stop, period_index)' %
-                        ','.join("(%s, %s, %s)" for i, period in enumerate(period_values)))
-        params = list(
-            chain.from_iterable(
-                (period[0] or None, period[1] or None, i)
-                for i, period in enumerate(period_values)
-            )
+        period_table = '(VALUES %s) AS period_table(date_start, date_stop, period_index)' % (
+            ','.join(["(%s, %s, %s)"]*len(period_values))
         )
+        params = list(chain.from_iterable(
+            (pi, pe, i) for i, (pi, pe) in enumerate(period_values)
+        ))
+
         return self.env.cr.mogrify(period_table, params).decode(self.env.cr.connection.encoding)
 
     ####################################################
@@ -71,21 +71,6 @@ class ReportAccountAgedPartner(models.AbstractModel):
 
     @api.model
     def _get_column_details(self, options):
-        def cal_days_diff(a, ba, bm, bd):
-            Anos = a.year - ba
-            if Anos > 0:
-                Meses = (a.month * Anos) - bm
-            else:
-                Meses = a.month - bm
-            if Meses > 0:
-                Dias = a.day*Meses - bd
-            else:
-                Dias = a.day - bd
-            issuesdays = Dias + (Meses*30) + (Anos*365)
-            if issuesdays < 0:
-                issuesdays = 0
-            return issuesdays
-
         return [
             self._header_column(),
             self._field_column('report_date', name=_('Date of Report')),
@@ -93,23 +78,18 @@ class ReportAccountAgedPartner(models.AbstractModel):
             self._custom_column(
                 name=_('Issue Days'),
                 classes=['char'],
-                getter=(
-                    lambda v: cal_days_diff(
-                        fields.Date.today(),
-                        v['report_date'].year,
-                        v['report_date'].month,
-                        v['report_date'].day
-                    )
-                ),
+                getter=lambda row: (
+                    fields.Date.today() - row['report_date']
+                ).days,
                 sortable=True,
             ),
             self._field_column('expected_pay_date', name=_("Expiration Date")),
             self._field_column(
                 'period0',
-                name=_("As of: %s", format_date(
-                    self.env,
-                    options['date']['date_to']
-                ))
+                name=_(
+                    "As of: %s",
+                    format_date(self.env, options['date']['date_to'])
+                )
             ),
             self._field_column('period1', name=_("1 - 15"), sortable=True),
             self._field_column('period2', name=_("16 - 30"), sortable=True),
@@ -120,8 +100,8 @@ class ReportAccountAgedPartner(models.AbstractModel):
                 name=_('Total'),
                 classes=['number'],
                 formatter=self.format_value,
-                getter=(
-                    lambda v: v['period0'] + v['period1'] + v['period2'] + v['period3'] + v['period4'] + v['period5']
+                getter=lambda row: sum(
+                    [row[f'period{i}'] for i in range(5+1)]
                 ),
                 sortable=True,
             ),
@@ -130,7 +110,6 @@ class ReportAccountAgedPartner(models.AbstractModel):
     def _show_line(self, report_dict, value_dict, current, options):
         # Don't display an aml report line with all zero amounts.
         all_zero = all(
-            self.env.company.currency_id.is_zero(value_dict[f])
-            for f in ['period0', 'period1', 'period2', 'period3', 'period4', 'period5']
+            self.env.company.currency_id.is_zero(value_dict[f'period{i}']) for i in range(5+1)
         )
         return super()._show_line(report_dict, value_dict, current, options) and not all_zero
